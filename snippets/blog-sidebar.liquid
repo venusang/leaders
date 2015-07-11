@@ -1,0 +1,68 @@
+<div class="span3 sidebar">
+  <div class="widget">
+    <h3>Featured Posts</h3>
+  {% for article in blog.articles limit:3 %}
+      {% for tag in article.tags %}
+        {% if tag == 'Featured' or tag == 'featured' %}
+  <div class="featured">
+    <div class="image">
+			{% assign my_image_url=article.content | escape %}
+			{% if my_image_url contains '&lt;img' %}
+			{% assign my_image_url = my_image_url | split: 'src=&quot;' %}
+			{% assign my_image_url = my_image_url[1] | split: '&quot;' %}
+			{% assign my_image_url = my_image_url[0] %}
+			{% assign my_image_url = my_image_url | remove: 'http:http://'; %}
+			{% assign my_image_url = my_image_url | remove: 'https:' %}
+				<img src="{{ my_image_url }}" />
+			{% endif %}       
+    </div>
+    <div class="intro"><a href="{{ article.url }}">{{ article.title }}</a><br>{{ article.published_at |  date: "%b %d, %Y" }}</div>
+  </div>
+    	{% endif %}
+    {% endfor %}
+  {% endfor %}    
+  </div>
+  <div class="widget">
+  <h3>Recent Posts</h3>
+  {% for article in blog.articles limit:5 %}
+  <div class="article">
+    <div class="image">
+			{% assign my_image_url=article.content | escape %}
+			{% if my_image_url contains '&lt;img' %}
+			{% assign my_image_url = my_image_url | split: 'src=&quot;' %}
+			{% assign my_image_url = my_image_url[1] | split: '&quot;' %}
+			{% assign my_image_url = my_image_url[0] %}
+			{% assign my_image_url = my_image_url | remove: 'http:http://'; %}
+			{% assign my_image_url = my_image_url | remove: 'https:' %}
+				<img src="{{ my_image_url }}" />
+			{% endif %}       
+    </div>
+    <div class="intro"><a href="{{ article.url }}">{{ article.title }}</a> {{ article.published_at |  date: "%b %d, %Y" }}</div>
+  </div>
+  {% endfor %}
+  </div>
+  <div class="widget">
+  {% if settings.display_blog_tags %}
+  <div class="clearfix">
+    {% if blog.all_tags.size > 0 %}
+    <h3>Search by Tags</h3>
+    <ul class="tags">
+      <li {% unless current_tags %} class="active"{% endunless %}><a href="{{ shop.url}}/blogs/{{ blog.handle }}">{{ 'blog.general.all' | t }}</a></li>
+      {% for tag in blog.all_tags %}
+      {% if current_tags contains tag %}
+      <li class="active">{{ tag | link_to_remove_tag: tag }}</li>
+      {% else %}
+      <li>{{ tag | link_to_tag: tag }}</li>
+      {% endif %}
+      {% endfor %}
+    </ul>
+    {% endif %}
+  </div>
+  {% endif %}
+  </div>
+    <div class="widget">
+    <h3>Follow Us</h3>
+      {% include 'social-links' %}
+  </div>
+  
+</div>

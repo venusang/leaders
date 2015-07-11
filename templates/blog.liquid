@@ -1,0 +1,56 @@
+</div></div>
+{% paginate blog.articles by settings.pagination_limit %}
+<div id="blog">
+
+<div class="wrapper" style="padding-bottom: 40px;">
+  <div class="row">
+    <div class="span7 inner-left logo-wrapper span12 wide">
+      <h1>{{ blog.title }}</h1>
+    </div>
+  <!-- Begin content -->
+  <div class="row">
+    <div class="span9 articles">
+      {% for article in blog.articles %}
+      <div class="article">
+        <h1>
+          <a href="{{ article.url }}">{{ article.title }}</a>
+        </h1>
+          <span class="date" style="display: block;">
+            {{ article.published_at |  date: "%b %d, %Y" }}
+            {% if article.comments_enabled? and article.comments_count > 0 %}
+            <small>
+              <a href="{{ article.url }}#comments">{{ 'blog.comments.comments_with_count' | t: count: article.comments_count }}</a>
+            </small>
+            {% endif %}
+          </span>
+        <div class="span4 alpha">
+			{% assign my_image_url=article.content | escape %}
+			{% if my_image_url contains '&lt;img' %}
+			{% assign my_image_url = my_image_url | split: 'src=&quot;' %}
+			{% assign my_image_url = my_image_url[1] | split: '&quot;' %}
+			{% assign my_image_url = my_image_url[0] %}
+			{% assign my_image_url = my_image_url | remove: 'http:http://'; %}
+			{% assign my_image_url = my_image_url | remove: 'https:' %}
+				<img src="{{ my_image_url }}" />
+			{% endif %} 
+        </div>
+        <div class="span5 omega content">
+        {{ article.excerpt_or_content | strip_html | truncatewords:40 }}
+          <a href="{{ article.url }}" class="read-more">Read More</a>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Begin sidebar -->
+    {% include 'blog-sidebar' %}
+    <!-- End sidebar -->
+
+  </div>
+  <!-- End content -->
+
+</div>
+
+{% include 'pagination' %}
+{% endpaginate %}
